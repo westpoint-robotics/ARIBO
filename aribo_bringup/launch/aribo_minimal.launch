@@ -1,12 +1,14 @@
 <launch>
 
-  <arg name="use_sim" default="false" />
+  <arg name="use_sim" default="true" />
   <arg name="use_gazebo_gui" default="false" />
   <arg name="use_joystick" default="false" />
   <arg name="use_keyboard" default="true" />
   <arg name="generate_robot" default="true" />
   <arg name="launch_rviz" default="true" />
+  <arg name="use_imu" default="true" />
   <arg name="use_rgbd_camera" default="true" />
+  <arg name="use_map" default="true" />
   <arg name="use_arucos" default="false" />
 
   <group if="$(arg launch_rviz)">
@@ -39,7 +41,11 @@
     </node>
   </group>
  
-  <!-- add an option to use a keyboard -->
+  <group if="$(arg use_keyboard)">
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop">
+      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
+    </node>
+  </group>
 
   <group if="$(arg use_sim)"> 
     <param name="use_sim_time" value="true" />
@@ -55,7 +61,6 @@
             -z 1.7
             -model robot_description"
       respawn="false" output="screen" />
-
   </group>
 
   <group unless="$(arg use_sim)"> 
@@ -65,7 +70,17 @@
   <!-- Set up a static transform publisher between the base_link of the robot and the camera frame -->
   <group if="$(arg use_rgbd_camera)"> 
     <include file="$(find openni2_launch)/launch/openni2.launch" />
-    <node pkg="tf" type="static_transform_publisher" name="robot_rgbd_broadcaster" args="0.5 0 0 0 0 0 1 base_link camera_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="robot_rgbd_broadcaster" args="0.25 0 0 0 0 0 1 base_link camera_link 100" />
+    <node pkg="depthimage_to_laserscan" name="depth_to_laser" type="depthimage_to_laserscan">
+	  <remap to="/camera/depth/image_raw" from="image"/>
+	  <remap to="/camera/depth/camera_info" from="camera_info"/>
+      <remap from="scan" to="/camera/depth/scan"/>
+    </node>
+  </group> 
+
+  <!-- Set up Phidgets IMU -->
+  <group if="$(arg use_imu)"> 
+    <include file="$(find phidgets_imu)/launch/imu.launch" />
   </group> 
 
   <!-- Set up marker tracking -->

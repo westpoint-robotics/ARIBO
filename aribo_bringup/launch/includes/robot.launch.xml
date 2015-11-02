@@ -1,0 +1,19 @@
+<!--
+  Collection of robot-centric definitions and nodes for aribo. 
+ -->
+<launch>
+  <arg name="3d_sensor"/>
+  
+  <include file="$(find aribo_bringup)/launch/includes/description.launch.xml">
+    <arg name="3d_sensor" value="$(arg 3d_sensor)" />
+  </include>
+
+  <!-- important generally, but specifically utilised by the current app manager -->  
+  <param name="robot/name" value="$(optenv ROBOT aribo)"/>
+  <param name="robot/type" value="aribo"/>
+  
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="5.0" />
+  </node>
+
+</launch>

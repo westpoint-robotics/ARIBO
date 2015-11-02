@@ -1,0 +1,16 @@
+<launch>
+
+  <!-- ARIBO -->
+  <arg name="3d_sensor"         default="$(env ARIBO_3D_SENSOR)"    doc="3d sensor types [kinect, asux_xtion_pro]"/>
+  <arg name="simulation"        default="$(env ARIBO_SIMULATION)"   doc="set flags to indicate this robot is run in simulation mode."/>
+
+  <param name="/use_sim_time" value="$(arg simulation)"/>
+
+  <include file="$(find aribo_bringup)/launch/includes/robot.launch.xml">
+    <arg name="3d_sensor" value="$(arg 3d_sensor)" />
+  </include>
+
+  <include file="$(find aribo_bringup)/launch/includes/mobile_base.launch.xml">
+  </include>
+
+</launch>
