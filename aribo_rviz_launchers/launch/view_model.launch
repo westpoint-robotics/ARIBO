@@ -1,0 +1,17 @@
+<!--
+  Standalone launcher used for visualising urdf models.
+ -->
+
+<launch>
+  <arg name="3d_sensor"  value="$(optenv ARIBO_3D_SENSOR asus_xtion_pro)"/>  <!-- kinect, asus_xtion_pro -->
+  
+  <include file="$(find aribo_bringup)/launch/includes/robot.launch.xml">
+    <arg name="3d_sensor" value="$(arg 3d_sensor)" />
+  </include>
+  
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="true"/>
+  </node>
+  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find aribo_rviz_launchers)/rviz/model.rviz" />
+</launch>
