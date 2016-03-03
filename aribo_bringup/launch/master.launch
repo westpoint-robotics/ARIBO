@@ -1,11 +1,14 @@
 <launch>
 
-  <arg name="use_sim" default="true" />
+  <arg name="use_sim" default="false" />
   <arg name="use_gazebo_gui" default="false" />
   <arg name="launch_rviz" default="true" />
   <arg name="use_teleop" default="false" />
+  <arg name="use_keyboard_teleop" default="true" />
   <arg name="generate_robot" default="true" />
   <arg name="use_velodyne" default="true" />
+  <arg name="use_laser_odom" default="true" />
+  <arg name="use_pcl_to_2dlaser" default="true" />
 
   <group if="$(arg launch_rviz)">
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find aribo_bringup)/launch/master.rviz" />
@@ -37,7 +40,13 @@
       <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
     </node>
   </group>
- 
+
+  <group if="$(arg use_keyboard_teleop)">
+    <node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py">
+      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
+    </node>
+  </group>
+
   <group if="$(arg use_sim)"> 
     <param name="use_sim_time" value="true" />
     <!-- spawn gazebo without the GUI -->
@@ -77,12 +86,26 @@
     <remap from="cmd_vel_mux/output" to="gvr_bot/cmd_vel"/>
   </node> 
 
-  <!-- laser scan matcher - used to register odometery information from velodyne -->
-  <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
-    <rosparam file="$(find aribo_bringup)/param/aribo_scan_matcher.yaml" command= "load"/>
-  </node>
+  <group if="$(arg use_laser_odom)">
+    <!-- laser scan matcher - used to register odometery information from velodyne -->
+    <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
+      <rosparam file="$(find aribo_bringup)/param/aribo_scan_matcher.yaml" command= "load"/>
+    </node>
+  </group> 
 
-  <!-- convert point cloud to laser scan -->
-  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan" output="screen"/>
+  <group if="$(arg use_pcl_to_2dlaser)">
+    <!-- convert the 3d pointcloud into 2d laser scan -->
+    <node name="pointcloud_to_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node">
+      <remap from="cloud_in" to="/velodyne_points"/>
+      <param name="output_frame_id" value="/velodyne_laser_static"/>    
+      <param name="min_height" value="-1"/>
+      <param name="max_height" value="3"/> -->
+      <param name="angle_min" value="-3.14159"/>
+      <param name="angle_max" value="3.14159"/>
+      <param name="scan_time" value="1/1000.0"/>
+      <param name="range_min" value="0"/>
+      <param name="range_max" value="50"/>
+    </node>
+  </group> 
 
 </launch>
