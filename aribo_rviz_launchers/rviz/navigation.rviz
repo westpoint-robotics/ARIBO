@@ -4,12 +4,12 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
+        - /Status1
         - /TF1/Frames1
         - /TF1/Tree1
         - /Global Map1/Planner1
         - /Local Map1
-        - /Local Map1/Planner1
-        - /Local Map1/Trajectory Cloud1
       Splitter Ratio: 0.5
     Tree Height: 747
   - Class: rviz/Selection
@@ -30,7 +30,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -407,7 +407,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -7.80003
+      Angle: -7.85503
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
@@ -416,11 +416,11 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 160.726
+      Scale: 220.968
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 0.153334
-      Y: -0.240413
+      X: -0.396245
+      Y: -0.489693
     Saved: ~
 Window Geometry:
   Displays:
