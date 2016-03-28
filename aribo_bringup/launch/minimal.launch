@@ -2,8 +2,20 @@
 <launch>
 
   <arg name="use_velodyne" default="true" />
-  <arg name="use_laser_odom" default="false" />
-  <arg name="use_pcl_to_2dlaser" default="false" />
+  <arg name="use_laser_odom" default="true" />
+  <arg name="use_pcl_to_2dlaser" default="true" />
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
+  <node
+    name="joint_state_publisher"
+    pkg="joint_state_publisher"
+   type="joint_state_publisher" />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="state_publisher">
+     <param name="publish_frequency" value="250.0" />
+  </node>
 
   <node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" />
 
@@ -18,6 +30,13 @@
   <include file="$(find usma_vision)/launch/pointgrey_camera.launch" />
   <include file="$(find usma_imu)/launch/phidgets_imu.launch" />
   <include file="$(find usma_ptu)/launch/ptu_bringup.launch" />
+
+  <!-- velocity commands multiplexer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find aribo_bringup)/param/mux.yaml"/>
+    <remap from="cmd_vel_mux/output" to="gvr_bot/cmd_vel"/>
+  </node> 
 
   <group if="$(arg use_laser_odom)">
     <!-- laser scan matcher - used to register odometery information from velodyne -->
