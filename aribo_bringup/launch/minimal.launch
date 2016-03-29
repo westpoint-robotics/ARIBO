@@ -1,78 +1,35 @@
+<!-- minimal.launch -->
 <launch>
 
-  <arg name="use_sim" default="true" />
-  <arg name="use_gazebo_gui" default="false" />
-  <arg name="use_teleop" default="false" />
-  <arg name="use_keyboard_teleop" default="true" />
-  <arg name="generate_robot" default="true" />
   <arg name="use_velodyne" default="true" />
   <arg name="use_laser_odom" default="true" />
   <arg name="use_pcl_to_2dlaser" default="true" />
 
-  <group if="$(arg generate_robot)">
-    <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
-    <node
-      name="joint_state_publisher"
-      pkg="joint_state_publisher"
-     type="joint_state_publisher" />
-    <node
-      name="robot_state_publisher"
-      pkg="robot_state_publisher"
-      type="state_publisher">
-       <param name="publish_frequency" value="250.0" />
-    </node>
-  </group>
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
+  <node
+    name="joint_state_publisher"
+    pkg="joint_state_publisher"
+   type="joint_state_publisher" />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="state_publisher">
+     <param name="publish_frequency" value="250.0" />
+  </node>
 
-  <group if="$(arg use_teleop)">
-    <arg name="joy_dev" default="/dev/input/js0" />
-    <!-- When using an Xbox 360 controller A is the trigger and the left joystick will move the robot -->
-    <node pkg="joy" type="joy_node" name="joy_node">
-      <param name="dev" value="$(arg joy_dev)" />
-      <param name="deadzone" value="0.3" />
-      <param name="autorepeat_rate" value="20" />
-    </node>
-    <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
-      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
-    </node>
-  </group>
+  <node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" />
 
-  <group if="$(arg use_keyboard_teleop)">
-    <node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py">
-      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
-    </node>
-  </group>
- 
-  <group if="$(arg use_sim)"> 
-    <param name="use_sim_time" value="true" />
-    <!-- spawn gazebo without the GUI -->
-    <!-- TODO: make all of the args in empty_world.launch pass through to a level above as well -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="gui" value="$(arg use_gazebo_gui)" />
-    </include>
-  
-    <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
-      args="-param robot_description
-            -urdf
-            -z 1.7
-            -model robot_description"
-      respawn="false" output="screen" />
+  <include file="$(find usma_velodyne)/launch/velodyne.launch" if="$(arg use_velodyne)">
+    <arg name="parent" value="velodyne_laser_static" />
+  </include>
 
-    <node name="velodyne_spin" pkg="usma_velodyne" type="start_velodyne_spindle" />
-  </group>
+  <!-- temporary static link to get a static vehicle's vision working -->
+  <node pkg="tf" type="static_transform_publisher" name="velodyne_to_velodyneStatic" args=" 0 0 0 -1.57 0 0 velodyne_laser_static velodyne  100" />
 
-  <group unless="$(arg use_sim)"> 
-    <!-- node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" / -->
-    <include file="$(find usma_velodyne)/launch/velodyne.launch" if="$(arg use_velodyne)">
-      <arg name="parent" value="velodyne_laser_static" />
-      <arg name="use_rviz" value="false" />
-    </include>
-
-    <!-- temporary static link to get a static vehicle's vision working -->
-    <node pkg="tf" type="static_transform_publisher" name="velodyne_to_velodyneStatic" args=" 0 0 0 -1.57 0 0 velodyne_laser_static velodyne  100" />
-
-    <include file="$(find usma_vision)/launch/pointgrey_camera.launch" />
-    <include file="$(find usma_imu)/launch/phidgets_imu.launch" />
-  </group> 
+  <!-- Launch camera, IMU, and PTU -->
+  <include file="$(find usma_vision)/launch/pointgrey_camera.launch" />
+  <include file="$(find usma_imu)/launch/phidgets_imu.launch" />
+  <include file="$(find usma_ptu)/launch/ptu_bringup.launch" />
 
   <!-- velocity commands multiplexer -->
   <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>

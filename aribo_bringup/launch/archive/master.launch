@@ -1,0 +1,111 @@
+<launch>
+
+  <arg name="use_sim" default="false" />
+  <arg name="use_gazebo_gui" default="false" />
+  <arg name="launch_rviz" default="true" />
+  <arg name="use_teleop" default="false" />
+  <arg name="use_keyboard_teleop" default="true" />
+  <arg name="generate_robot" default="true" />
+  <arg name="use_velodyne" default="true" />
+  <arg name="use_laser_odom" default="true" />
+  <arg name="use_pcl_to_2dlaser" default="true" />
+
+  <group if="$(arg launch_rviz)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find aribo_bringup)/launch/master.rviz" />
+  </group>
+
+  <group if="$(arg generate_robot)">
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
+    <node
+      name="joint_state_publisher"
+      pkg="joint_state_publisher"
+     type="joint_state_publisher" />
+    <node
+      name="robot_state_publisher"
+      pkg="robot_state_publisher"
+      type="state_publisher">
+       <param name="publish_frequency" value="250.0" />
+    </node>
+  </group>
+
+  <group if="$(arg use_teleop)">
+    <arg name="joy_dev" default="/dev/input/js0" />
+    <!-- When using an Xbox 360 controller A is the trigger and the left joystick will move the robot -->
+    <node pkg="joy" type="joy_node" name="joy_node">
+      <param name="dev" value="$(arg joy_dev)" />
+      <param name="deadzone" value="0.3" />
+      <param name="autorepeat_rate" value="20" />
+    </node>
+    <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
+      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
+    </node>
+  </group>
+
+  <group if="$(arg use_keyboard_teleop)">
+    <node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py">
+      <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
+    </node>
+  </group>
+
+  <group if="$(arg use_sim)"> 
+    <param name="use_sim_time" value="true" />
+    <!-- spawn gazebo without the GUI -->
+    <!-- TODO: make all of the args in empty_world.launch pass through to a level above as well -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="gui" value="$(arg use_gazebo_gui)" />
+    </include>
+  
+    <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
+      args="-param robot_description
+            -urdf
+            -z 1.7
+            -model robot_description"
+      respawn="false" output="screen" />
+
+    <node name="velodyne_spin" pkg="usma_velodyne" type="start_velodyne_spindle" />
+  </group>
+
+  <group unless="$(arg use_sim)"> 
+    <node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" />
+    <include file="$(find usma_velodyne)/launch/velodyne.launch" if="$(arg use_velodyne)">
+      <arg name="parent" value="velodyne_laser_static" />
+      <arg name="use_rviz" value="false" />
+    </include>
+
+    <!-- temporary static link to get a static vehicle's vision working -->
+    <node pkg="tf" type="static_transform_publisher" name="velodyne_to_velodyneStatic" args=" 0 0 0 -1.57 0 0 velodyne_laser_static velodyne  100" />
+
+    <include file="$(find usma_vision)/launch/pointgrey_camera.launch" />
+    <include file="$(find usma_imu)/launch/phidgets_imu.launch" />
+  </group> 
+
+  <!-- velocity commands multiplexer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find aribo_bringup)/param/mux.yaml"/>
+    <remap from="cmd_vel_mux/output" to="gvr_bot/cmd_vel"/>
+  </node> 
+
+  <group if="$(arg use_laser_odom)">
+    <!-- laser scan matcher - used to register odometery information from velodyne -->
+    <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
+      <rosparam file="$(find aribo_bringup)/param/aribo_scan_matcher.yaml" command= "load"/>
+    </node>
+  </group> 
+
+  <group if="$(arg use_pcl_to_2dlaser)">
+    <!-- convert the 3d pointcloud into 2d laser scan -->
+    <node name="pointcloud_to_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node">
+      <remap from="cloud_in" to="/velodyne_points"/>
+      <param name="output_frame_id" value="/velodyne_laser_static"/>    
+      <param name="min_height" value="-1"/>
+      <param name="max_height" value="3"/> -->
+      <param name="angle_min" value="-3.14159"/>
+      <param name="angle_max" value="3.14159"/>
+      <param name="scan_time" value="1/1000.0"/>
+      <param name="range_min" value="0"/>
+      <param name="range_max" value="50"/>
+    </node>
+  </group> 
+
+</launch>

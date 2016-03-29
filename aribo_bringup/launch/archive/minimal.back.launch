@@ -1,18 +1,14 @@
+<!-- minimal.launch -->
 <launch>
 
   <arg name="use_sim" default="false" />
   <arg name="use_gazebo_gui" default="false" />
-  <arg name="launch_rviz" default="true" />
-  <arg name="use_teleop" default="false" />
+  <arg name="use_teleop" default="true" />
   <arg name="use_keyboard_teleop" default="true" />
   <arg name="generate_robot" default="true" />
-  <arg name="use_velodyne" default="true" />
-  <arg name="use_laser_odom" default="true" />
-  <arg name="use_pcl_to_2dlaser" default="true" />
-
-  <group if="$(arg launch_rviz)">
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find aribo_bringup)/launch/master.rviz" />
-  </group>
+  <arg name="use_velodyne" default="false" />
+  <arg name="use_laser_odom" default="false" />
+  <arg name="use_pcl_to_2dlaser" default="false" />
 
   <group if="$(arg generate_robot)">
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
@@ -46,7 +42,7 @@
       <remap from="/cmd_vel" to="/gvr_bot/cmd_vel" />
     </node>
   </group>
-
+ 
   <group if="$(arg use_sim)"> 
     <param name="use_sim_time" value="true" />
     <!-- spawn gazebo without the GUI -->
@@ -66,7 +62,7 @@
   </group>
 
   <group unless="$(arg use_sim)"> 
-    <!-- node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" / -->
+    <node name="gvr_bot_bridge" pkg="gvr_bot" type="run_gvr_bot.sh" output="screen" />
     <include file="$(find usma_velodyne)/launch/velodyne.launch" if="$(arg use_velodyne)">
       <arg name="parent" value="velodyne_laser_static" />
       <arg name="use_rviz" value="false" />
