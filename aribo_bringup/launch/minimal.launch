@@ -4,6 +4,7 @@
   <arg name="use_velodyne" default="true" />
   <arg name="use_laser_odom" default="true" />
   <arg name="use_pcl_to_2dlaser" default="true" />
+  <arg name="use_ar_markers" default="true" />
 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find gvr_bot)/urdf/gvr_bot.urdf.xacro'" />
   <node
@@ -60,4 +61,7 @@
     </node>
   </group> 
 
+  <group if="$(arg use_ar_markers)">
+      <include file="$(find aribo_navigation)/launch/marker.launch" />
+  </group> 
 </launch>
