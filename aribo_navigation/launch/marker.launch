@@ -6,7 +6,7 @@
 
     <arg name="cam_info"     default="/camera/camera_info" />
     <arg name="image_topic"  default="/camera/image_raw" />
-    <arg name="cam_frame"    default="camera_mount" />
+    <arg name="cam_frame"    default="flea3_optical" />
     <arg name="markerId"     default="587"/>
     <arg name="markerSize"   default="0.1"/>    <!-- in m -->
     <arg name="marker_frame" default="aruco_marker_frame"/>

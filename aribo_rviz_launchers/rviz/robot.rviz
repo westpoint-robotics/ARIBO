@@ -5,9 +5,10 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.5
-    Tree Height: 337
+    Tree Height: 325
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -170,106 +171,19 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_footprint:
-          Value: true
-        base_link:
-          Value: true
-        camera_mount:
-          Value: true
-        flea3:
-          Value: true
-        flea3_optical:
-          Value: true
-        left_0_wheel_link:
-          Value: true
-        left_1_wheel_link:
-          Value: true
-        left_2_wheel_link:
-          Value: true
-        left_3_wheel_link:
-          Value: true
-        left_4_wheel_link:
-          Value: true
-        left_5_wheel_link:
-          Value: true
-        odom:
-          Value: true
-        plexiglass_base:
-          Value: true
-        right_0_wheel_link:
-          Value: true
-        right_1_wheel_link:
-          Value: true
-        right_2_wheel_link:
-          Value: true
-        right_3_wheel_link:
-          Value: true
-        right_4_wheel_link:
-          Value: true
-        right_5_wheel_link:
-          Value: true
-        velodyne:
-          Value: true
-        velodyne_laser_spin:
-          Value: true
-        velodyne_laser_static:
-          Value: true
-        velodyne_mast_top:
-          Value: true
-        velodyne_mount:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: false
-      Show Axes: false
+      Show Axes: true
       Show Names: false
       Tree:
-        odom:
-          base_link:
-            base_footprint:
-              {}
-            left_0_wheel_link:
-              {}
-            left_1_wheel_link:
-              {}
-            left_2_wheel_link:
-              {}
-            left_3_wheel_link:
-              {}
-            left_4_wheel_link:
-              {}
-            left_5_wheel_link:
-              {}
-            plexiglass_base:
-              camera_mount:
-                flea3:
-                  flea3_optical:
-                    {}
-              velodyne_mount:
-                velodyne_mast_top:
-                  velodyne_laser_static:
-                    velodyne:
-                      {}
-                    velodyne_laser_spin:
-                      {}
-            right_0_wheel_link:
-              {}
-            right_1_wheel_link:
-              {}
-            right_2_wheel_link:
-              {}
-            right_3_wheel_link:
-              {}
-            right_4_wheel_link:
-              {}
-            right_5_wheel_link:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -358,22 +272,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.90482
+      Distance: 2.17926
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.0617831
-        Y: -0.047315
-        Z: 0.183978
+        X: 0.0328278
+        Y: 0.0660897
+        Z: 0.170533
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.275399
+      Pitch: 0.225399
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.06541
+      Yaw: 2.42542
     Saved: ~
 Window Geometry:
   Displays:
@@ -383,7 +297,7 @@ Window Geometry:
   Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001e90000034bfc0200000006fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000192000000dd00fffffffb0000000a0049006d00610067006501000001c0000001b30000001600ffffff000000010000010b00000294fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003300000294000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004a00000003efc0100000002fb0000000800540069006d00650000000000000004a0000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000004570000034b00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001e900000332fc0200000006fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006400fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000004100000186000000dd00fffffffb0000000a0049006d00610067006501000001cd000001a60000001600ffffff000000010000010b00000294fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003300000294000000b000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004a00000003efc0100000002fb0000000800540069006d00650000000000000004a0000002f600fffffffb0000000800540069006d00650100000000000004500000000000000000000004570000033200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

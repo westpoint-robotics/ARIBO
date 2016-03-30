@@ -39,15 +39,15 @@
     <remap from="cmd_vel_mux/output" to="gvr_bot/cmd_vel"/>
   </node> 
 
+  <!-- laser scan matcher - used to register odometery information from velodyne -->
   <group if="$(arg use_laser_odom)">
-    <!-- laser scan matcher - used to register odometery information from velodyne -->
     <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
       <rosparam file="$(find aribo_bringup)/param/aribo_scan_matcher.yaml" command= "load"/>
     </node>
   </group> 
 
+  <!-- convert the 3d pointcloud into 2d laser scan -->
   <group if="$(arg use_pcl_to_2dlaser)">
-    <!-- convert the 3d pointcloud into 2d laser scan -->
     <node name="pointcloud_to_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node">
       <remap from="cloud_in" to="/velodyne_points"/>
       <param name="output_frame_id" value="/velodyne_laser_static"/>    
@@ -61,6 +61,7 @@
     </node>
   </group> 
 
+  <!-- launch augmented reality marker tracking -->
   <group if="$(arg use_ar_markers)">
       <include file="$(find aribo_navigation)/launch/marker.launch" />
   </group> 
