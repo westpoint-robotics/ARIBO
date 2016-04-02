@@ -23,3 +23,29 @@ In the sourced ROS Environment.
 `roslaunch aribo_bringup minimal.launch --screen`
 
 Once the system is running, subsequent commands should be done from the workstation computer.
+
+## 3D Visualization
+
+On the workstation computer, start rviz already configured to visualize the robot and its sensor's output:
+
+`roslaunch aribo_rviz_launchers view_robot.launch`
+
+## Teleoperation
+
+### Joystick Teleop
+
+1. Goal
+
+Use a joystick to teleoperate the robot. Note that several joystick configurations can be supported - depending on your joystick you may just need to remap the keys.
+
+2. Setting up the Joystick
+
+For the most part, this tutorial assumes you have already got your joystick plugged in and its ready to go. Some more detailed information for specific joysticks: 
+
+3. Execute
+
+`roslaunch aribo_teleop drive_joy.launch`
+
+## Navigation
+
+### SLAM Map Building
