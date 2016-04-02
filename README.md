@@ -34,13 +34,43 @@ On the workstation computer, start rviz already configured to visualize the robo
 
 ### Joystick Teleop
 
-1. Goal
+#### Goal
 Use a joystick to teleoperate the robot. Note that several joystick configurations can be supported - depending on your joystick you may just need to remap the keys.
-2. Setting up the Joystick
+#### Setting up the Joystick
 For the most part, this tutorial assumes you have already got your joystick plugged in and its ready to go. Some more detailed information for specific joysticks: 
-3. Execute
+#### Execute
 `roslaunch aribo_teleop drive_joy.launch`
 
 ## Navigation
 
 ### SLAM Map Building
+
+Goal
+
+This tutorial shows how to build a map to let the robot remember the environnment around. With generated map, robot can autonomously navigate around.
+
+Execute
+
+Make sure the minimal software has already been launched on the robot and you have configured your network correctly. The default navigation parameters provided on turtlebot_navigation should be apropriate in most cases, but if not, take a look at the setup navigation tutorial.
+
+Roslaunch
+
+1. On the TurtleBot, start gmapping_demo on the turtlebot laptop.
+
+# From turtlebot laptop.
+ > roslaunch turtlebot_navigation gmapping_demo.launch
+
+2. On the PC
+
+Start rviz already configured to visualize the robot and its sensor's output:
+
+ > roslaunch turtlebot_rviz_launchers view_navigation.launch
+
+If you are facing a trouble, please check your setups. TurtleBot Bringup, PC Bringup, and Network Configuration
+
+3. Drive the robot around by either and save map:
+
+    Using telop (keyboard, joystick, or other) from Teleoperation Tutorials
+
+    If you are having troubles making a map check out this question. 
+
